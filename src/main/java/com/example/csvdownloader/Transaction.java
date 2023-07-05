@@ -9,6 +9,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 
@@ -18,7 +19,7 @@ import java.util.Date;
 public class Transaction {
     private String trxnReference;
     private double amount;
-    private Date dateCreated;
+    private LocalDateTime dateCreated;
     private String trxnType;
     private String customerName;
 }

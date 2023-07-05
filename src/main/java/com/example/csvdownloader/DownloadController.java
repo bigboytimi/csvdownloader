@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.List;
 
@@ -26,6 +27,7 @@ public class DownloadController {
     private final TransactionService transactionService;
 
     private final String currentDateTime = getSimpleDateFormat().format(new Date());
+    DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
 
     // using ResponseEntity.
@@ -39,7 +41,7 @@ public class DownloadController {
         for (Transaction transaction : transactions) {
             transactionDetails.append(transaction.getTrxnReference()).append(",")
                     .append(transaction.getAmount()).append(",")
-                    .append(getSimpleDateFormat().format(transaction.getDateCreated())).append(",")
+                    .append(transaction.getDateCreated().format(dateTimeFormatter)).append(",")
                     .append(transaction.getTrxnType()).append(",")
                     .append(transaction.getCustomerName()).append("\n");
         }
@@ -50,7 +52,8 @@ public class DownloadController {
             ByteArrayResource transactionCsv = new ByteArrayResource(transactionCsvBytes);
 
             return ResponseEntity.ok()
-                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=transactions.csv")
+                    .header(HttpHeaders.CONTENT_DISPOSITION,
+                            "attachment; filename=transactions" + currentDateTime + ".csv")
                     .contentType(MediaType.parseMediaType("text/csv"))
                     .contentLength(transactionCsvBytes.length)
                     .body(transactionCsv);
@@ -61,7 +64,6 @@ public class DownloadController {
         @GetMapping("/csv-2")
         public void downloadCsv2(HttpServletResponse response) throws IOException {
             List<Transaction> transactions = transactionService.getAllTransactions();
-
 
             String headerKey = "Content-Disposition";
             String headerValue = "attachment; filename=transaction_" + currentDateTime + ".csv";
@@ -75,7 +77,7 @@ public class DownloadController {
             for (Transaction transaction : transactions) {
                 transactionDetails1.append(transaction.getTrxnReference()).append(",")
                         .append(transaction.getAmount()).append(",")
-                        .append(getSimpleDateFormat().format(transaction.getDateCreated())).append(",")
+                        .append(transaction.getDateCreated().format(dateTimeFormatter)).append(",")
                         .append(transaction.getTrxnType()).append(",")
                         .append(transaction.getCustomerName()).append("\n");
             }
