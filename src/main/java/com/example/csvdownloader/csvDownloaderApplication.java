@@ -4,10 +4,10 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class CsvdownloaderApplication {
+public class csvDownloaderApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(CsvdownloaderApplication.class, args);
+        SpringApplication.run(csvDownloaderApplication.class, args);
     }
 
 }

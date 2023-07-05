@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 @Controller
@@ -24,6 +25,8 @@ public class DownloadController {
 
     private final TransactionService transactionService;
 
+    private final String currentDateTime = getSimpleDateFormat().format(new Date());
+
 
     // using ResponseEntity.
     @GetMapping("/csv-1")
@@ -31,9 +34,6 @@ public class DownloadController {
         List<Transaction> transactions = transactionService.getAllTransactions();
 
         StringBuilder transactionDetails = new StringBuilder();
-
-
-
         transactionDetails.append("trxnReference, amount, dateCreated, trxnType, customerName \n");
 
         for (Transaction transaction : transactions) {
@@ -62,8 +62,11 @@ public class DownloadController {
         public void downloadCsv2(HttpServletResponse response) throws IOException {
             List<Transaction> transactions = transactionService.getAllTransactions();
 
+
+            String headerKey = "Content-Disposition";
+            String headerValue = "attachment; filename=transaction_" + currentDateTime + ".csv";
             response.setContentType("text/csv");
-            response.setHeader("Content-Disposition", "attachment; filename=\"transactions.csv\"");
+            response.setHeader(headerKey, headerValue);
 
 
             StringBuilder transactionDetails1 = new StringBuilder();
