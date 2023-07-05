@@ -32,6 +32,8 @@ public class DownloadController {
 
         StringBuilder transactionDetails = new StringBuilder();
 
+
+
         transactionDetails.append("trxnReference, amount, dateCreated, trxnType, customerName \n");
 
         for (Transaction transaction : transactions) {
