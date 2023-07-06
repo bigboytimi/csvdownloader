@@ -1,5 +1,6 @@
 package com.example.csvdownloader;
 
+import com.itextpdf.text.DocumentException;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -12,85 +13,52 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
+import java.io.OutputStream;
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.List;
 
 @Controller
-@RequestMapping("/download")
+@RequestMapping("/api/v1/download")
 @RequiredArgsConstructor
 public class DownloadController {
 
-    private final TransactionService transactionService;
+        private final TransactionService transactionService;
 
-    private final String currentDateTime = getSimpleDateFormat().format(new Date());
-    DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-
-
-    // using ResponseEntity.
-    @GetMapping("/csv-1")
-    public ResponseEntity<ByteArrayResource> downloadCsv1() {
-        List<Transaction> transactions = transactionService.getAllTransactions();
-
-        StringBuilder transactionDetails = new StringBuilder();
-        transactionDetails.append("trxnReference, amount, dateCreated, trxnType, customerName \n");
-
-        for (Transaction transaction : transactions) {
-            transactionDetails.append(transaction.getTrxnReference()).append(",")
-                    .append(transaction.getAmount()).append(",")
-                    .append(transaction.getDateCreated().format(dateTimeFormatter)).append(",")
-                    .append(transaction.getTrxnType()).append(",")
-                    .append(transaction.getCustomerName()).append("\n");
+         // using ResponseEntity for csv.
+        @GetMapping("/csv-1")
+        public ResponseEntity<ByteArrayResource> downloadCsv1() {
+            return transactionService.generateCsvFileV1();
         }
 
 
-            byte[] transactionCsvBytes = transactionDetails.toString().getBytes();
-
-            ByteArrayResource transactionCsv = new ByteArrayResource(transactionCsvBytes);
-
-            return ResponseEntity.ok()
-                    .header(HttpHeaders.CONTENT_DISPOSITION,
-                            "attachment; filename=transactions" + currentDateTime + ".csv")
-                    .contentType(MediaType.parseMediaType("text/csv"))
-                    .contentLength(transactionCsvBytes.length)
-                    .body(transactionCsv);
-        }
-
-
-        //using HttpServletResponse
+        //using HttpServletResponse for csv
         @GetMapping("/csv-2")
         public void downloadCsv2(HttpServletResponse response) throws IOException {
-            List<Transaction> transactions = transactionService.getAllTransactions();
+            transactionService.generateCsvFileV2(response);
+        }
 
-            String headerKey = "Content-Disposition";
-            String headerValue = "attachment; filename=transaction_" + currentDateTime + ".csv";
-            response.setContentType("text/csv");
-            response.setHeader(headerKey, headerValue);
+        //using HttpServlet for Pdf
+        @GetMapping("/pdf-1")
+        public void downloadPdf1(HttpServletResponse response) throws IOException, DocumentException {
+            transactionService.generatePdf1(response);
 
 
-            StringBuilder transactionDetails1 = new StringBuilder();
-            transactionDetails1.append("trxnReference,amount,dateCreated,trxnType,customerName").append("\n");
+        }
 
-            for (Transaction transaction : transactions) {
-                transactionDetails1.append(transaction.getTrxnReference()).append(",")
-                        .append(transaction.getAmount()).append(",")
-                        .append(transaction.getDateCreated().format(dateTimeFormatter)).append(",")
-                        .append(transaction.getTrxnType()).append(",")
-                        .append(transaction.getCustomerName()).append("\n");
-            }
-
-            response.getWriter().write(transactionDetails1.toString());
-            response.getWriter().flush();
-            response.getWriter().close();
+        //using ResponseEntity for Pdf
+        @GetMapping("/pdf-2")
+        public ResponseEntity<byte[]> downloadPdf2() throws DocumentException, IOException {
+            return transactionService.generatePdf2();
         }
 
 
-        public SimpleDateFormat getSimpleDateFormat(){
-            return new SimpleDateFormat("yyyy-MM-dd");
-        }
 
 
 }
