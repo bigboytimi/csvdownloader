@@ -24,7 +24,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.List;
 
-@Controller
+@RestController
 @RequestMapping("/api/v1/download")
 @RequiredArgsConstructor
 public class DownloadController {
