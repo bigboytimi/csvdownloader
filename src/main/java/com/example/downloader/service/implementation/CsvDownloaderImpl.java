@@ -26,7 +26,7 @@ public class CsvDownloaderImpl implements CsvDownloader {
 
 
     @Override
-    public ResponseEntity<ByteArrayResource> generateCsvFileV1() {
+    public ResponseEntity<ByteArrayResource> generateCsv1() {
         List<Transaction> transactions = transactionService.getAllTransactions();
 
         StringBuilder transactionDetails = new StringBuilder();
@@ -55,7 +55,7 @@ public class CsvDownloaderImpl implements CsvDownloader {
     }
 
     @Override
-    public void generateCsvFileV2(HttpServletResponse response) throws IOException {
+    public void generateCsv2(HttpServletResponse response) throws IOException {
         List<Transaction> transactions = transactionService.getAllTransactions();
 
         String headerKey = "Content-Disposition";

@@ -2,10 +2,8 @@ package com.example.downloader.controller;
 
 import com.example.downloader.service.CsvDownloader;
 import com.example.downloader.service.PdfDownloader;
-import com.example.downloader.service.implementation.TransactionService;
 import com.itextpdf.text.DocumentException;
 import jakarta.servlet.http.HttpServletResponse;
-import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -30,7 +28,7 @@ public class DownloadController {
     @GetMapping("/method1")
     public ResponseEntity<ByteArrayResource> downloadMethod1(@RequestParam("type") String fileType) throws DocumentException, IOException {
         if(fileType.equalsIgnoreCase("csv")) {
-            return csvDownloader.generateCsvFileV1();
+            return csvDownloader.generateCsv1();
         } else if(fileType.equalsIgnoreCase("pdf")){
             return pdfDownloader.downloadPdf1();
         } else{
@@ -43,7 +41,7 @@ public class DownloadController {
     @GetMapping("/method2")
     public void downloadMethod2(@RequestParam("type") String fileType, HttpServletResponse response) throws IOException, DocumentException {
         if(fileType.equalsIgnoreCase("csv")){
-            csvDownloader.generateCsvFileV2(response);
+            csvDownloader.generateCsv2(response);
         } else if (fileType.equalsIgnoreCase("pdf")) {
             pdfDownloader.downloadPdf2(response);
         } else {
