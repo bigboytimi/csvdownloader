@@ -17,10 +17,9 @@ import java.io.IOException;
 
 @RestController
 @RequestMapping("/api/v1/download")
-
 public class DownloadController {
-        private final PdfDownloader pdfDownloader;
-        private final CsvDownloader csvDownloader;
+    private final PdfDownloader pdfDownloader;
+    private final CsvDownloader csvDownloader;
 
     public DownloadController(PdfDownloader pdfDownloader, CsvDownloader csvDownloader) {
         this.pdfDownloader = pdfDownloader;
@@ -28,29 +27,29 @@ public class DownloadController {
     }
 
     // using ResponseEntity
-        @GetMapping("/method1")
-        public ResponseEntity<ByteArrayResource> downloadMethod1(@RequestParam("type") String fileType) throws DocumentException, IOException {
-            if(fileType.equalsIgnoreCase("csv")) {
-                return csvDownloader.generateCsvFileV1();
-            } else if(fileType.equalsIgnoreCase("pdf")){
-                return pdfDownloader.downloadPdf1();
-            } else{
-                return ResponseEntity.badRequest().body(null);
-            }
+    @GetMapping("/method1")
+    public ResponseEntity<ByteArrayResource> downloadMethod1(@RequestParam("type") String fileType) throws DocumentException, IOException {
+        if(fileType.equalsIgnoreCase("csv")) {
+            return csvDownloader.generateCsvFileV1();
+        } else if(fileType.equalsIgnoreCase("pdf")){
+            return pdfDownloader.downloadPdf1();
+        } else{
+            return ResponseEntity.badRequest().body(null);
         }
+    }
 
 
-        //using HttpServletResponse
-        @GetMapping("/method2")
-        public void downloadMethod2(@RequestParam("type") String fileType, HttpServletResponse response) throws IOException, DocumentException {
-            if(fileType.equalsIgnoreCase("csv")){
-                csvDownloader.generateCsvFileV2(response);
-            } else if (fileType.equalsIgnoreCase("pdf")) {
-                pdfDownloader.downloadPdf2(response);
-            } else {
-                response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid file type");
-            }
+    //using HttpServletResponse
+    @GetMapping("/method2")
+    public void downloadMethod2(@RequestParam("type") String fileType, HttpServletResponse response) throws IOException, DocumentException {
+        if(fileType.equalsIgnoreCase("csv")){
+            csvDownloader.generateCsvFileV2(response);
+        } else if (fileType.equalsIgnoreCase("pdf")) {
+            pdfDownloader.downloadPdf2(response);
+        } else {
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid file type");
         }
+    }
 
 }
 

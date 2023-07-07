@@ -60,7 +60,6 @@ public class PdfDownloaderImpl implements PdfDownloader {
 
 
     //Helper Methods
-
     // Generate PDF for HttpServletResponse.
     private void generatePdfWithHttpServletResponse(List<Transaction> transactions, OutputStream outputStream) throws DocumentException {
         Document document = new Document();

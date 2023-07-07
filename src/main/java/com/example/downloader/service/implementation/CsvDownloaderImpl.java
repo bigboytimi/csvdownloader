@@ -21,7 +21,6 @@ import java.util.List;
 public class CsvDownloaderImpl implements CsvDownloader {
 
     private final TransactionService transactionService;
-
     private final String currentDateTime = getSimpleDateFormat().format(new Date());
     DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
