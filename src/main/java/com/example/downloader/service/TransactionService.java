@@ -1,16 +1,15 @@
-package com.example.csvdownloader;
+package com.example.downloader.service;
 
-import com.itextpdf.text.Document;
+import com.example.downloader.entity.Transaction;
 import com.itextpdf.text.DocumentException;
-import com.itextpdf.text.pdf.PdfWriter;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.text.DateFormat;
@@ -24,7 +23,12 @@ import java.util.List;
 @Service
 public class TransactionService {
 
-    private static int random = 0;
+   private final PdfGenerator pdfGenerator;
+
+   @Autowired
+    public TransactionService(PdfGenerator pdfGenerator) {
+        this.pdfGenerator = pdfGenerator;
+    }
 
     private final String currentDateTime = getSimpleDateFormat().format(new Date());
     DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
@@ -97,17 +101,16 @@ public class TransactionService {
         response.setContentType("application/pdf");
 
         try (OutputStream outputStream = response.getOutputStream()) {
-            PdfGenerator.generatePdf(transactions, outputStream);
+            pdfGenerator.generatePdfWithHttpServletResponse(transactions, outputStream);
         }
     }
 
-    public ResponseEntity<byte[]> generatePdf2() throws DocumentException, IOException {
+    public ResponseEntity<ByteArrayResource> generatePdf2() throws DocumentException, IOException {
         List<Transaction> transactions = getAllTransactions();
 
         // Generate PDF content as byte array
-        byte[] pdfContent = PdfGenerator.generatePdf1(transactions);
+        ByteArrayResource pdfContent = pdfGenerator.generatePdfWithResponseEntity(transactions);
 
-        // Set response headers
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_PDF);
         headers.setContentDispositionFormData("attachment", "transactions.pdf");

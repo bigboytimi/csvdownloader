@@ -1,17 +1,22 @@
-package com.example.csvdownloader;
+package com.example.downloader.service;
 
 
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.io.OutputStream;
 import java.util.List;
+
+import com.example.downloader.entity.Transaction;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.pdf.PdfWriter;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.stereotype.Service;
 
-public class PdfGenerator {
-    public static void generatePdf(List<Transaction> transactions, OutputStream outputStream) throws DocumentException {
+@Service
+public class PdfGeneratorImpl implements PdfGenerator {
+    @Override
+    public void generatePdfWithHttpServletResponse(List<Transaction> transactions, OutputStream outputStream) throws DocumentException {
         Document document = new Document();
         PdfWriter.getInstance(document, outputStream);
         document.open();
@@ -28,7 +33,8 @@ public class PdfGenerator {
         document.close();
     }
 
-    public static byte[] generatePdf1(List<Transaction> transactions) throws DocumentException, IOException {
+    @Override
+    public ByteArrayResource generatePdfWithResponseEntity(List<Transaction> transactions) throws DocumentException {
         Document document = new Document();
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         PdfWriter.getInstance(document, outputStream);
@@ -44,8 +50,6 @@ public class PdfGenerator {
         }
 
         document.close();
-        return outputStream.toByteArray();
+        return new ByteArrayResource(outputStream.toByteArray());
     }
-
-
 }
