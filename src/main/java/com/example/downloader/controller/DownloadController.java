@@ -17,14 +17,17 @@ import java.io.IOException;
 
 @RestController
 @RequestMapping("/api/v1/download")
-@RequiredArgsConstructor
+
 public class DownloadController {
+        private final PdfDownloader pdfDownloader;
+        private final CsvDownloader csvDownloader;
 
-        private final TransactionService transactionService;
-        private PdfDownloader pdfDownloader;
-        private CsvDownloader csvDownloader;
+    public DownloadController(PdfDownloader pdfDownloader, CsvDownloader csvDownloader) {
+        this.pdfDownloader = pdfDownloader;
+        this.csvDownloader = csvDownloader;
+    }
 
-         // using ResponseEntity
+    // using ResponseEntity
         @GetMapping("/method1")
         public ResponseEntity<ByteArrayResource> downloadMethod1(@RequestParam("type") String fileType) throws DocumentException, IOException {
             if(fileType.equalsIgnoreCase("csv")) {
