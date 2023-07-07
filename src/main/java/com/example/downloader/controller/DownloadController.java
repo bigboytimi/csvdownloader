@@ -24,7 +24,7 @@ public class DownloadController {
 
          // using ResponseEntity
         @GetMapping("/method1")
-        public ResponseEntity<ByteArrayResource> downloadFile(@RequestParam("type") String fileType) throws DocumentException, IOException {
+        public ResponseEntity<ByteArrayResource> downloadMethod1(@RequestParam("type") String fileType) throws DocumentException, IOException {
             if(fileType.equalsIgnoreCase("csv")) {
                 return transactionService.generateCsvFileV1();
             } else if(fileType.equalsIgnoreCase("pdf")){
@@ -37,7 +37,7 @@ public class DownloadController {
 
         //using HttpServletResponse
         @GetMapping("/method2")
-        public void downloadCsv2(@RequestParam("type") String fileType, HttpServletResponse response) throws IOException, DocumentException {
+        public void downloadMethod2(@RequestParam("type") String fileType, HttpServletResponse response) throws IOException, DocumentException {
             if(fileType.equalsIgnoreCase("csv")){
                 transactionService.generateCsvFileV2(response);
             } else if (fileType.equalsIgnoreCase("pdf")) {
